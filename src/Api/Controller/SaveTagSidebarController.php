@@ -18,6 +18,9 @@ class SaveTagSidebarController implements RequestHandlerInterface
 
         $id = $request->getAttribute('id');
         $body = $request->getParsedBody();
+        if (empty($body)) {
+            $body = json_decode((string) $request->getBody(), true) ?? [];
+        }
 
         $tag = Tag::findOrFail($id);
         $tag->custom_sidebar = $body['customSidebar'] ?? null;
