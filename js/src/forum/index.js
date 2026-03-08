@@ -70,10 +70,6 @@ app.initializers.add('quasimo-tag-sidebar', () => {
         mountWidget(this.element || vnode.dom);
     });
 
-    extend(IndexPage.prototype, 'onupdate', function (result, vnode) {
-        mountWidget(this.element || vnode.dom);
-    });
-
     extend(IndexPage.prototype, 'onremove', function () {
         cleanup();
     });
