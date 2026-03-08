@@ -8,14 +8,9 @@ export default class TagSidebarWidget extends Component {
     view() {
         const tag = this.attrs.tag;
         const customSidebar = tag.attribute('customSidebar');
-        const customDescription = tag.attribute('customDescription');
         const isAdmin = app.session.user && app.session.user.isAdmin();
 
         return m('div', { className: 'TagSidebarWidget' },
-            customDescription && m('div', { className: 'TagSidebarWidget-description' },
-                customDescription
-            ),
-
             customSidebar
                 ? m('div', {
                     className: 'TagSidebarWidget-content',

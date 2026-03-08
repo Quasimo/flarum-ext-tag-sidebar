@@ -15,11 +15,9 @@ app.initializers.add('quasimo-tag-sidebar', () => {
         const isAdmin = app.session.user && app.session.user.isAdmin();
 
         if (customSidebar || isAdmin) {
-            items.add(
-                'quasimo-tag-sidebar-widget',
-                m(TagSidebarWidget, { tag }),
-                90
-            );
+            // Priority -100: append after ALL existing sidebar items to avoid
+            // Mithril position-based diffing issues (no keys on sibling nodes).
+            items.add('quasimo-tag-sidebar-widget', m(TagSidebarWidget, { tag }), -100);
         }
     });
 });

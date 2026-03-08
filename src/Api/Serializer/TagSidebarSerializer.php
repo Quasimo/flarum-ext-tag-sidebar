@@ -9,7 +9,6 @@ class TagSidebarSerializer
 {
     public function __invoke(AbstractSerializer $serializer, Tag $tag, array $attributes): array
     {
-        $attributes['customDescription'] = $tag->custom_description;
         $attributes['customSidebar'] = $tag->custom_sidebar;
         return $attributes;
     }

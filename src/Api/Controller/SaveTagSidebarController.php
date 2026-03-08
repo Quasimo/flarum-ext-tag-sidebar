@@ -20,14 +20,12 @@ class SaveTagSidebarController implements RequestHandlerInterface
         $body = $request->getParsedBody();
 
         $tag = Tag::findOrFail($id);
-        $tag->custom_description = $body['customDescription'] ?? null;
         $tag->custom_sidebar = $body['customSidebar'] ?? null;
         $tag->save();
 
         return new JsonResponse([
             'data' => [
                 'id' => $tag->id,
-                'customDescription' => $tag->custom_description,
                 'customSidebar' => $tag->custom_sidebar,
             ]
         ]);
