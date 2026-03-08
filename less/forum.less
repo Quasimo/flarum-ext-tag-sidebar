@@ -5,10 +5,20 @@
   background: var(--control-bg);
   border-radius: var(--border-radius);
 
+  &-description {
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--body-color);
+    border-bottom: 1px solid var(--control-bg-dark);
+    padding-bottom: 12px;
+  }
+
   &-content {
     font-size: 14px;
     line-height: 1.6;
     color: var(--body-color);
+    margin-bottom: 12px;
 
     h1, h2, h3 {
       margin: 0 0 8px;
@@ -19,27 +29,18 @@
 
     p {
       margin: 0 0 8px;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
+      &:last-child { margin-bottom: 0; }
     }
 
     ul {
       margin: 0 0 8px;
       padding-left: 16px;
-
-      li {
-        margin-bottom: 4px;
-      }
+      li { margin-bottom: 4px; }
     }
 
     a {
       color: var(--link-color);
-
-      &:hover {
-        text-decoration: underline;
-      }
+      &:hover { text-decoration: underline; }
     }
   }
 
@@ -47,32 +48,19 @@
     color: var(--muted-color);
     font-size: 13px;
     font-style: italic;
+    margin-bottom: 12px;
   }
-}
 
-// Edit button in tag hero
-.TagSidebar-editBtnWrap {
-  margin-top: 12px;
-  text-align: center;
-
-  .Button {
+  &-editBtn {
     font-size: 13px;
-    padding: 6px 14px;
+    width: 100%;
+    text-align: center;
   }
-}
-
-// Custom description in hero
-.TagSidebar-customDescription {
-  margin-top: 8px;
-  font-size: 15px;
-  opacity: 0.85;
 }
 
 // Modal
 .EditTagSidebarModal {
-  .Modal-body {
-    padding: 20px;
-  }
+  .Modal-body { padding: 20px; }
 
   textarea.FormControl {
     resize: vertical;
