@@ -5,7 +5,10 @@ import TagSidebarWidget from './components/TagSidebarWidget';
 
 app.initializers.add('quasimo-tag-sidebar', () => {
     extend(IndexPage.prototype, 'sidebarItems', function (items) {
-        const tag = app.current.get('tag');
+        const tagSlug = m.route.param('tags');
+        if (!tagSlug) return;
+
+        const tag = app.store.getBy('tags', 'slug', tagSlug);
         if (!tag) return;
 
         const customSidebar = tag.attribute('customSidebar');
