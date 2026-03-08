@@ -18,10 +18,6 @@ return [
         ->js(__DIR__ . '/js/dist/forum.js')
         ->css(__DIR__ . '/less/forum.less'),
 
-    // Database migrations
-    (new Extend\Migration())
-        ->directory(__DIR__ . '/migrations'),
-
     // Locale files
     new Extend\Locales(__DIR__ . '/resources/locale'),
 ];
