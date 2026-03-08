@@ -1,7 +1,7 @@
-import app from 'flarum/forum/app';
-import Modal from 'flarum/common/components/Modal';
-import Button from 'flarum/common/components/Button';
-import Stream from 'flarum/common/utils/Stream';
+import app from 'flarum/app';
+import Modal from 'flarum/components/Modal';
+import Button from 'flarum/components/Button';
+import Stream from 'flarum/utils/Stream';
 
 export default class EditTagSidebarModal extends Modal {
     oninit(vnode) {
@@ -25,7 +25,6 @@ export default class EditTagSidebarModal extends Modal {
     content() {
         return m('div', { className: 'Modal-body' },
             m('div', { className: 'Form' },
-                // Description field
                 m('div', { className: 'Form-group' },
                     m('label', {},
                         app.translator.trans('quasimo-tag-sidebar.forum.description_label')
@@ -38,7 +37,6 @@ export default class EditTagSidebarModal extends Modal {
                         placeholder: app.translator.trans('quasimo-tag-sidebar.forum.description_placeholder'),
                     })
                 ),
-                // Sidebar markdown field
                 m('div', { className: 'Form-group' },
                     m('label', {},
                         app.translator.trans('quasimo-tag-sidebar.forum.sidebar_label')
@@ -51,7 +49,6 @@ export default class EditTagSidebarModal extends Modal {
                         placeholder: app.translator.trans('quasimo-tag-sidebar.forum.sidebar_placeholder'),
                     })
                 ),
-                // Save button
                 m('div', { className: 'Form-group' },
                     m(Button, {
                         className: 'Button Button--primary',
@@ -79,12 +76,11 @@ export default class EditTagSidebarModal extends Modal {
             },
         }).then((response) => {
             this.saving = false;
-            // Update tag attributes in store
             tag.pushAttributes({
                 customDescription: response.data.customDescription,
                 customSidebar: response.data.customSidebar,
             });
-            this.hide();
+            app.modal.close();
             m.redraw();
         }).catch(() => {
             this.saving = false;

@@ -1,6 +1,6 @@
-import app from 'flarum/forum/app';
-import { extend } from 'flarum/common/utils/extend';
-import IndexPage from 'flarum/forum/components/IndexPage';
+import app from 'flarum/app';
+import { extend } from 'flarum/extend';
+import IndexPage from 'flarum/components/IndexPage';
 import TagSidebarWidget from './components/TagSidebarWidget';
 
 app.initializers.add('quasimo-tag-sidebar', () => {
