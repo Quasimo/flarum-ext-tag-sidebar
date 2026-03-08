@@ -12,11 +12,9 @@ export default class TagSidebarWidget extends Component {
 
         return m('div', { className: 'TagSidebarWidget' },
             customSidebar
-                ? m('div', {
-                    className: 'TagSidebarWidget-content',
-                    oncreate: (vnode) => { vnode.dom.innerHTML = parseMarkdown(customSidebar); },
-                    onupdate: (vnode) => { vnode.dom.innerHTML = parseMarkdown(customSidebar); },
-                  })
+                ? m('div', { className: 'TagSidebarWidget-content' },
+                    m.trust(parseMarkdown(customSidebar))
+                  )
                 : (isAdmin && m('div', { className: 'TagSidebarWidget-empty' },
                     app.translator.trans('quasimo-tag-sidebar.forum.sidebar_empty')
                   )),
