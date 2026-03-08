@@ -126,10 +126,10 @@ function renderWidget(tag) {
 
     if (!tag) return;
 
-    const isAdmin = !!(app.session.user && app.session.user.isAdmin());
+    const canEdit = !!(app.session.user && app.forum.attribute('canEditTagSidebar'));
     const customSidebar = tag.attribute('customSidebar');
 
-    if (!customSidebar && !isAdmin) return;
+    if (!customSidebar && !canEdit) return;
 
     const nav = document.querySelector('nav.IndexPage-nav')
              || document.querySelector('.sideNav');
@@ -145,14 +145,14 @@ function renderWidget(tag) {
         content.className = 'TagSidebarWidget-content';
         content.innerHTML = parseMarkdown(customSidebar);
         widget.appendChild(content);
-    } else if (isAdmin) {
+    } else if (canEdit) {
         const empty = document.createElement('p');
         empty.className = 'TagSidebarWidget-empty';
         empty.textContent = app.translator.trans('quasimo-tag-sidebar.forum.sidebar_empty');
         widget.appendChild(empty);
     }
 
-    if (isAdmin) {
+    if (canEdit) {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'Button Button--block TagSidebarWidget-editBtn';

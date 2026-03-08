@@ -7,3 +7,10 @@ quasimo-tag-sidebar:
     save_button: "保存"
     cancel_button: "取消"
     sidebar_empty: "（暂无侧栏内容）"
+  admin:
+    instructions_title: "使用说明"
+    instruction_1: "前往论坛任意 Tag 页面。"
+    instruction_2: "拥有权限的用户会在侧栏看到「编辑侧栏」按钮。"
+    instruction_3: "点击按钮打开编辑器，用 Markdown 写入内容后保存即可。"
+    instruction_4: "在下方权限设置中，可将编辑权限开放给版主。"
+    permission_edit_sidebar: "编辑 Tag 侧栏内容"

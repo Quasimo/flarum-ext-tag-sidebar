@@ -15,7 +15,7 @@ class SaveTagSidebarController implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $actor = RequestUtil::getActor($request);
-        $actor->assertAdmin();
+        $actor->assertPermission('quasimo-tag-sidebar.editSidebar');
 
         $id = Arr::get($request->getQueryParams(), 'id');
         $body = $request->getParsedBody();
