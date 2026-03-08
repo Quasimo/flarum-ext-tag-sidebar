@@ -4,6 +4,7 @@ namespace Quasimo\TagSidebar\Api\Controller;
 
 use Flarum\Http\RequestUtil;
 use Flarum\Tags\Tag;
+use Illuminate\Support\Arr;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -16,7 +17,7 @@ class SaveTagSidebarController implements RequestHandlerInterface
         $actor = RequestUtil::getActor($request);
         $actor->assertAdmin();
 
-        $id = $request->getAttribute('id');
+        $id = Arr::get($request->getQueryParams(), 'id');
         $body = $request->getParsedBody();
         if (empty($body)) {
             $body = json_decode((string) $request->getBody(), true) ?? [];
