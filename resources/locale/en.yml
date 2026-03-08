@@ -5,4 +5,5 @@ quasimo-tag-sidebar:
     sidebar_label: "Sidebar Content (Markdown)"
     sidebar_placeholder: "Enter sidebar content using Markdown...\n\n## Links\n- [Example](https://example.com)\n\n**Bold** and *italic* are supported."
     save_button: "Save"
+    cancel_button: "Cancel"
     sidebar_empty: "(No sidebar content yet)"
