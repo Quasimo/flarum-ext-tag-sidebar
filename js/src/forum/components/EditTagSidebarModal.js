@@ -65,6 +65,8 @@ export default class EditTagSidebarModal extends Modal {
                 customSidebar: response.data.customSidebar,
             });
             app.modal.close();
+            // Refresh the sidebar widget with updated content
+            if (app.tagSidebarRender) app.tagSidebarRender(tag);
             m.redraw();
         }).catch(() => {
             this.saving = false;
