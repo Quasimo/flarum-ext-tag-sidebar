@@ -48,7 +48,10 @@ function renderWidget(tag) {
         btn.type = 'button';
         btn.className = 'Button Button--block TagSidebarWidget-editBtn';
         btn.textContent = app.translator.trans('quasimo-tag-sidebar.forum.edit_button');
-        btn.addEventListener('click', () => app.modal.show(EditTagSidebarModal, { tag }));
+        btn.addEventListener('click', () => {
+            app.modal.show(EditTagSidebarModal, { tag });
+            m.redraw();
+        });
         widget.appendChild(btn);
     }
 
