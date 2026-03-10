@@ -5,6 +5,15 @@ use Quasimo\TagSidebar\Api\Serializer\TagSidebarSerializer;
 use Flarum\Extend;
 
 return [
+    // Expose global settings to the forum frontend
+    (new Extend\Settings())
+        ->serializeToForum('tagSidebarPosition', 'quasimo-tag-sidebar.sidebar_position', function ($value) {
+            return $value ?: 'left';
+        })
+        ->serializeToForum('tagSidebarContentType', 'quasimo-tag-sidebar.content_type', function ($value) {
+            return $value ?: 'markdown';
+        }),
+
     // API route to save tag sidebar data
     (new Extend\Routes('api'))
         ->post('/tag-sidebar/{id}', 'quasimo-tag-sidebar.save', SaveTagSidebarController::class),

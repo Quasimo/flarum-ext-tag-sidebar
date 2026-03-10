@@ -16,6 +16,28 @@ app.initializers.add('quasimo-tag-sidebar', () => {
                 ]),
             ]);
         })
+        .registerSetting({
+            setting: 'quasimo-tag-sidebar.sidebar_position',
+            label: app.translator.trans('quasimo-tag-sidebar.admin.setting_position'),
+            help: app.translator.trans('quasimo-tag-sidebar.admin.setting_position_help'),
+            type: 'select',
+            options: {
+                left: app.translator.trans('quasimo-tag-sidebar.admin.position_left'),
+                right: app.translator.trans('quasimo-tag-sidebar.admin.position_right'),
+            },
+            default: 'left',
+        })
+        .registerSetting({
+            setting: 'quasimo-tag-sidebar.content_type',
+            label: app.translator.trans('quasimo-tag-sidebar.admin.setting_content_type'),
+            help: app.translator.trans('quasimo-tag-sidebar.admin.setting_content_type_help'),
+            type: 'select',
+            options: {
+                markdown: app.translator.trans('quasimo-tag-sidebar.admin.content_type_markdown'),
+                html: app.translator.trans('quasimo-tag-sidebar.admin.content_type_html'),
+            },
+            default: 'markdown',
+        })
         .registerPermission(
             {
                 icon: 'fas fa-pen',

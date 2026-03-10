@@ -1,4 +1,4 @@
-// Tag Sidebar Widget
+// Tag Sidebar Widget — base styles shared by all variants
 .TagSidebarWidget {
   margin-bottom: 16px;
   padding: 16px;
@@ -33,6 +33,13 @@
       color: var(--link-color);
       &:hover { text-decoration: underline; }
     }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 4px 0;
+    }
   }
 
   &-empty {
@@ -55,7 +62,61 @@
   }
 }
 
-// Pure DOM edit dialog
+// ─── Left mode ───────────────────────────────────────────────────────────────
+// Desktop: widget is inside the nav — no extra work needed.
+// Mobile:  widget is inserted after .IndexPage-results (.TagSidebarWidget--mobile).
+
+// Hide the desktop (nav) widget on mobile — the nav itself is collapsed, but
+// add explicit hide to prevent double rendering if the nav is somehow visible.
+@media (max-width: 767px) {
+  .TagSidebarWidget--desktop {
+    display: none;
+  }
+}
+
+// Hide the mobile (after-results) widget on desktop.
+@media (min-width: 768px) {
+  .TagSidebarWidget--mobile {
+    display: none;
+  }
+}
+
+// ─── Right mode ──────────────────────────────────────────────────────────────
+// The widget (.TagSidebarWidget--right) is inserted as a sibling after
+// .IndexPage-results.  On desktop we turn the parent into a flex row so the
+// sidebar floats to the right.  On mobile the flex is disabled and the widget
+// falls below the results naturally.
+
+@media (min-width: 768px) {
+  .TagSidebarLayout--right {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+
+    // Ensure the nav (if present as a sibling) keeps its width
+    > nav, > .IndexPage-nav, > .sideNav {
+      flex-shrink: 0;
+    }
+
+    > .IndexPage-results {
+      flex: 1;
+      min-width: 0;
+    }
+
+    > .TagSidebarWidget--right {
+      width: 200px;
+      flex-shrink: 0;
+      margin-top: 0;
+      margin-left: 16px;
+      // Stick to the top while scrolling through a long post list
+      position: sticky;
+      top: 60px;
+      align-self: flex-start;
+    }
+  }
+}
+
+// ─── Pure DOM edit dialog ─────────────────────────────────────────────────────
 .TagSidebarDialog {
   &-overlay {
     position: fixed;

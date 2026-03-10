@@ -1,6 +1,6 @@
 /**
  * Minimal Markdown to HTML parser for sidebar content.
- * Supports: headings, bold, italic, links, unordered lists, paragraphs.
+ * Supports: headings, bold, italic, links, images, unordered lists, paragraphs.
  */
 export function parseMarkdown(text) {
     if (!text) return '';
@@ -53,20 +53,26 @@ export function parseMarkdown(text) {
 }
 
 function inlineMarkdown(text, escapeHtml) {
-    // Process links FIRST before escaping, then escape everything else
-    // Links: [text](url)
+    // Process images and links before escaping (both use [...](...) syntax)
+    // Images: ![alt](url)  Links: [text](url)
+    const mediaRegex = /(!?)\[([^\]]*)\]\(([^)]+)\)/g;
     let result = '';
-    let remaining = text;
-    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
     let lastIndex = 0;
     let match;
 
-    while ((match = linkRegex.exec(text)) !== null) {
+    while ((match = mediaRegex.exec(text)) !== null) {
         result += escapeHtml(text.slice(lastIndex, match.index));
-        const linkText = escapeHtml(match[1]);
+        const isImage = match[1] === '!';
+        const altOrText = escapeHtml(match[2]);
         // Only allow http/https URLs
-        const url = match[2].match(/^https?:\/\//) ? match[2] : '#';
-        result += `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${linkText}</a>`;
+        const url = match[3].match(/^https?:\/\//) ? match[3] : '#';
+        const safeUrl = escapeHtml(url);
+
+        if (isImage) {
+            result += `<img src="${safeUrl}" alt="${altOrText}" style="max-width:100%;height:auto;">`;
+        } else {
+            result += `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${altOrText}</a>`;
+        }
         lastIndex = match.index + match[0].length;
     }
     result += escapeHtml(text.slice(lastIndex));

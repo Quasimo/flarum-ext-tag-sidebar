@@ -3,7 +3,7 @@ import { extend } from 'flarum/extend';
 import IndexPage from 'flarum/components/IndexPage';
 import { parseMarkdown } from './utils/markdown';
 
-const WIDGET_ID = 'quasimo-tag-sidebar-widget';
+const WIDGET_ATTR = 'data-tag-sidebar';
 const DIALOG_ID = 'quasimo-tag-sidebar-dialog';
 
 function getTag() {
@@ -12,14 +12,20 @@ function getTag() {
 }
 
 function closeDialog() {
-    const dialog = document.getElementById(DIALOG_ID);
-    if (dialog) dialog.remove();
+    const overlay = document.getElementById(DIALOG_ID);
+    if (overlay) {
+        if (overlay._onKeydown) {
+            document.removeEventListener('keydown', overlay._onKeydown);
+        }
+        overlay.remove();
+    }
     document.body.classList.remove('TagSidebarDialog-open');
 }
 
 function showEditDialog(tag) {
-    // Remove any existing dialog
     closeDialog();
+
+    const contentType = app.forum.attribute('tagSidebarContentType') || 'markdown';
 
     const overlay = document.createElement('div');
     overlay.id = DIALOG_ID;
@@ -56,13 +62,17 @@ function showEditDialog(tag) {
 
     const label = document.createElement('label');
     label.className = 'TagSidebarDialog-label';
-    label.textContent = app.translator.trans('quasimo-tag-sidebar.forum.sidebar_label');
+    label.textContent = contentType === 'html'
+        ? app.translator.trans('quasimo-tag-sidebar.forum.sidebar_label_html')
+        : app.translator.trans('quasimo-tag-sidebar.forum.sidebar_label');
 
     const textarea = document.createElement('textarea');
     textarea.className = 'TagSidebarDialog-textarea FormControl';
     textarea.rows = 12;
     textarea.value = tag.attribute('customSidebar') || '';
-    textarea.placeholder = app.translator.trans('quasimo-tag-sidebar.forum.sidebar_placeholder');
+    textarea.placeholder = contentType === 'html'
+        ? app.translator.trans('quasimo-tag-sidebar.forum.sidebar_placeholder_html')
+        : app.translator.trans('quasimo-tag-sidebar.forum.sidebar_placeholder');
 
     body.appendChild(label);
     body.appendChild(textarea);
@@ -109,41 +119,23 @@ function showEditDialog(tag) {
     document.body.appendChild(overlay);
     document.body.classList.add('TagSidebarDialog-open');
 
-    // Focus textarea
     setTimeout(() => textarea.focus(), 50);
 
-    // ESC to close
     overlay._onKeydown = (e) => { if (e.key === 'Escape') closeDialog(); };
     document.addEventListener('keydown', overlay._onKeydown);
-    overlay.addEventListener('remove-listener', () => {
-        document.removeEventListener('keydown', overlay._onKeydown);
-    });
 }
 
-function renderWidget(tag) {
-    const old = document.getElementById(WIDGET_ID);
-    if (old) old.remove();
-
-    if (!tag) return;
-
-    const canEdit = !!(app.session.user && app.forum.attribute('canEditTagSidebar'));
+function buildWidget(tag, canEdit, contentType, extraClass) {
     const customSidebar = tag.attribute('customSidebar');
 
-    if (!customSidebar && !canEdit) return;
-
-    const nav = document.querySelector('nav.IndexPage-nav')
-             || document.querySelector('.sideNav');
-    if (!nav) return;
-
     const widget = document.createElement('div');
-    widget.id = WIDGET_ID;
-    widget.className = 'TagSidebarWidget';
-    widget.dataset.slug = tag.attribute('slug') || '';
+    widget.className = 'TagSidebarWidget' + (extraClass ? ' ' + extraClass : '');
+    widget.setAttribute(WIDGET_ATTR, tag.attribute('slug') || '');
 
     if (customSidebar) {
         const content = document.createElement('div');
         content.className = 'TagSidebarWidget-content';
-        content.innerHTML = parseMarkdown(customSidebar);
+        content.innerHTML = contentType === 'html' ? customSidebar : parseMarkdown(customSidebar);
         widget.appendChild(content);
     } else if (canEdit) {
         const empty = document.createElement('p');
@@ -161,7 +153,53 @@ function renderWidget(tag) {
         widget.appendChild(btn);
     }
 
-    nav.appendChild(widget);
+    return widget;
+}
+
+function renderWidget(tag) {
+    // Remove all existing widgets and clean up layout class
+    document.querySelectorAll(`[${WIDGET_ATTR}]`).forEach((el) => {
+        if (el.parentNode) {
+            el.parentNode.classList.remove('TagSidebarLayout--right');
+        }
+        el.remove();
+    });
+
+    if (!tag) return;
+
+    const canEdit = !!(app.session.user && app.forum.attribute('canEditTagSidebar'));
+    const customSidebar = tag.attribute('customSidebar');
+    const contentType = app.forum.attribute('tagSidebarContentType') || 'markdown';
+    const position = app.forum.attribute('tagSidebarPosition') || 'left';
+
+    if (!customSidebar && !canEdit) return;
+
+    const results = document.querySelector('.IndexPage-results');
+
+    if (position === 'right') {
+        // Right mode: one widget inserted after results.
+        // Desktop CSS displays it as a right column; mobile shows it below results naturally.
+        if (results) {
+            const widget = buildWidget(tag, canEdit, contentType, 'TagSidebarWidget--right');
+            results.insertAdjacentElement('afterend', widget);
+            results.parentNode.classList.add('TagSidebarLayout--right');
+        }
+    } else {
+        // Left mode (default):
+        // Desktop — insert into nav (already visible in the sidebar)
+        // Mobile  — insert after results (always visible below the post list)
+        const nav = document.querySelector('nav.IndexPage-nav') || document.querySelector('.sideNav');
+
+        if (nav) {
+            const desktopWidget = buildWidget(tag, canEdit, contentType, 'TagSidebarWidget--desktop');
+            nav.appendChild(desktopWidget);
+        }
+
+        if (results) {
+            const mobileWidget = buildWidget(tag, canEdit, contentType, 'TagSidebarWidget--mobile');
+            results.insertAdjacentElement('afterend', mobileWidget);
+        }
+    }
 }
 
 app.initializers.add('quasimo-tag-sidebar', () => {
@@ -171,8 +209,8 @@ app.initializers.add('quasimo-tag-sidebar', () => {
 
     extend(IndexPage.prototype, 'onupdate', function () {
         const tag = getTag();
-        const existing = document.getElementById(WIDGET_ID);
-        const existingSlug = existing ? existing.dataset.slug : null;
+        const existing = document.querySelector(`[${WIDGET_ATTR}]`);
+        const existingSlug = existing ? existing.getAttribute(WIDGET_ATTR) : null;
         const newSlug = tag ? tag.attribute('slug') || '' : null;
 
         if (existing && existingSlug === newSlug) return;
@@ -182,7 +220,6 @@ app.initializers.add('quasimo-tag-sidebar', () => {
 
     extend(IndexPage.prototype, 'onremove', function () {
         closeDialog();
-        const old = document.getElementById(WIDGET_ID);
-        if (old) old.remove();
+        document.querySelectorAll(`[${WIDGET_ATTR}]`).forEach((el) => el.remove());
     });
 });
