@@ -1,6 +1,6 @@
-import app from 'flarum/app';
-import Component from 'flarum/Component';
-import Button from 'flarum/components/Button';
+import app from 'flarum/forum/app';
+import Component from 'flarum/common/Component';
+import Button from 'flarum/common/components/Button';
 import EditTagSidebarModal from './EditTagSidebarModal';
 import { parseMarkdown } from '../utils/markdown';
 
