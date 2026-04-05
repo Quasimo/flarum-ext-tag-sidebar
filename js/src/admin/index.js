@@ -1,4 +1,4 @@
-import app from 'flarum/admin/app';
+import app from 'flarum/app';
 
 app.initializers.add('quasimo-tag-sidebar', () => {
     app.extensionData

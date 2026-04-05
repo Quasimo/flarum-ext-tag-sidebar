@@ -1,6 +1,6 @@
-import app from 'flarum/forum/app';
-import { extend } from 'flarum/common/utils/extend';
-import IndexPage from 'flarum/forum/components/IndexPage';
+import app from 'flarum/app';
+import { extend } from 'flarum/extend';
+import IndexPage from 'flarum/components/IndexPage';
 import { parseMarkdown } from './utils/markdown';
 
 const WIDGET_ATTR = 'data-tag-sidebar';
