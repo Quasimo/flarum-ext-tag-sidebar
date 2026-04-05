@@ -1,6 +1,5 @@
 {
     "name": "quasimo/flarum-ext-tag-sidebar",
-    "version": "2.0.0",
     "description": "Customize sidebar content and description for specific Flarum tag pages",
     "type": "flarum-extension",
     "license": "MIT",
