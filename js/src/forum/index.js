@@ -1,6 +1,4 @@
 import app from 'flarum/common/app';
-import { extend } from 'flarum/common/extend';
-import IndexPage from 'flarum/forum/components/IndexPage';
 import { parseMarkdown } from './utils/markdown';
 
 const WIDGET_ATTR = 'data-tag-sidebar';
@@ -198,6 +196,17 @@ function renderWidget(tag) {
 }
 
 app.initializers.add('quasimo-tag-sidebar', () => {
+    const extendModule = typeof flarum !== 'undefined' && flarum.reg && typeof flarum.reg.get === 'function'
+        ? flarum.reg.get('core', 'common/extend')
+        : (flarum.core && flarum.core.compat && flarum.core.compat['common/extend']);
+    const extend = extendModule && extendModule.extend;
+
+    const IndexPage = typeof flarum !== 'undefined' && flarum.reg && typeof flarum.reg.get === 'function'
+        ? flarum.reg.get('core', 'forum/components/IndexPage')
+        : (flarum.core && flarum.core.compat && flarum.core.compat['forum/components/IndexPage']);
+
+    if (!extend || !IndexPage) return;
+
     extend(IndexPage.prototype, 'oncreate', function () {
         setTimeout(() => renderWidget(getTag()), 0);
     });
