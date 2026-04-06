@@ -1,7 +1,10 @@
 import app from 'flarum/common/app';
-import { extend } from 'flarum/common/extend';
+import * as extendModule from 'flarum/common/extend';
 import IndexPage from 'flarum/forum/components/IndexPage';
 import { parseMarkdown } from './utils/markdown';
+
+// Support both Flarum 1.x (named export) and 2.x (default export)
+const extend = extendModule.extend || (extendModule.default && extendModule.default.extend);
 
 const WIDGET_ATTR = 'data-tag-sidebar';
 const DIALOG_ID = 'quasimo-tag-sidebar-dialog';
