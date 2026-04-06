@@ -1,10 +1,9 @@
 import app from 'flarum/admin/app';
-import Extend from 'flarum/common/extenders';
 
 export { default as extend } from './extend';
 
-// Flarum 1.x: register settings via app.extensionData inside initializer
-if (!Extend.Admin) {
+// Flarum 1.x: flarum.reg does not exist, use app.extensionData
+if (typeof flarum === 'undefined' || !flarum.reg) {
   app.initializers.add('quasimo-tag-sidebar', () => {
     app.extensionData
       .for('quasimo-tag-sidebar')
