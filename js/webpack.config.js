@@ -6,6 +6,10 @@ module.exports = {
     admin: './admin.js',
   },
 
+  output: {
+    libraryTarget: 'commonjs2',
+  },
+
   plugins: [
     new NormalModuleReplacementPlugin(/^@babel\/runtime(.*)/, (resource) => {
       const path = resource.request.split('@babel/runtime')[1];
