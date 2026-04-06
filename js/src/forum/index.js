@@ -1,6 +1,6 @@
 import app from 'flarum/common/app';
-import { extend } from 'flarum/common/utils/extend';
-import IndexPage from 'flarum/common/components/IndexPage';
+import { extend } from 'flarum/common/extend';
+import IndexPage from 'flarum/forum/components/IndexPage';
 import { parseMarkdown } from './utils/markdown';
 
 const WIDGET_ATTR = 'data-tag-sidebar';
@@ -174,21 +174,16 @@ function renderWidget(tag) {
 
     if (!customSidebar && !canEdit) return;
 
-    const results = document.querySelector('.IndexPage-results');
+    const results = document.querySelector('.Page-content');
 
     if (position === 'right') {
-        // Right mode: one widget inserted after results.
-        // Desktop CSS displays it as a right column; mobile shows it below results naturally.
         if (results) {
             const widget = buildWidget(tag, canEdit, contentType, 'TagSidebarWidget--right');
             results.insertAdjacentElement('afterend', widget);
             results.parentNode.classList.add('TagSidebarLayout--right');
         }
     } else {
-        // Left mode (default):
-        // Desktop — insert into nav (already visible in the sidebar)
-        // Mobile  — insert after results (always visible below the post list)
-        const nav = document.querySelector('nav.IndexPage-nav') || document.querySelector('.sideNav');
+        const nav = document.querySelector('.Page-sidebar') || document.querySelector('nav.IndexPage-nav') || document.querySelector('.sideNav');
 
         if (nav) {
             const desktopWidget = buildWidget(tag, canEdit, contentType, 'TagSidebarWidget--desktop');
