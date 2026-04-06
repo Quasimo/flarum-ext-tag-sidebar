@@ -1,11 +1,12 @@
 <?php
 
 use Quasimo\TagSidebar\Api\Controller\SaveTagSidebarController;
-use Quasimo\TagSidebar\Api\Serializer\TagSidebarSerializer;
 use Flarum\Extend;
+use Flarum\Tags\Api\Resource\TagResource;
+use Flarum\Api\Resource\ForumResource;
+use Flarum\Api\Schema;
 
 return [
-    // Expose global settings to the forum frontend
     (new Extend\Settings())
         ->serializeToForum('tagSidebarPosition', 'quasimo-tag-sidebar.sidebar_position', function ($value) {
             return $value ?: 'left';
@@ -14,29 +15,27 @@ return [
             return $value ?: 'markdown';
         }),
 
-    // API route to save tag sidebar data
     (new Extend\Routes('api'))
         ->post('/tag-sidebar/{id}', 'quasimo-tag-sidebar.save', SaveTagSidebarController::class),
 
-    // Extend Tag serializer to include custom fields
-    (new Extend\ApiSerializer(\Flarum\Tags\Api\Serializer\TagSerializer::class))
-        ->attributes(TagSidebarSerializer::class),
+    (new Extend\ApiResource(TagResource::class))
+        ->fields(fn () => [
+            Schema\Str::make('customSidebar')
+                ->get(fn (\Flarum\Tags\Tag $tag) => $tag->custom_sidebar),
+        ]),
 
-    // Expose edit permission to forum frontend
-    (new Extend\ApiSerializer(\Flarum\Api\Serializer\ForumSerializer::class))
-        ->attribute('canEditTagSidebar', function (\Flarum\Api\Serializer\ForumSerializer $serializer) {
-            return $serializer->getActor()->hasPermission('quasimo-tag-sidebar.editSidebar');
-        }),
+    (new Extend\ApiResource(ForumResource::class))
+        ->fields(fn () => [
+            Schema\Boolean::make('canEditTagSidebar')
+                ->get(fn ($model, \Flarum\Api\Context $context) => $context->getActor()->hasPermission('quasimo-tag-sidebar.editSidebar')),
+        ]),
 
-    // Forum frontend
     (new Extend\Frontend('forum'))
         ->js(__DIR__ . '/js/dist/forum.js')
         ->css(__DIR__ . '/less/forum.less'),
 
-    // Admin frontend
     (new Extend\Frontend('admin'))
         ->js(__DIR__ . '/js/dist/admin.js'),
 
-    // Locale files
     new Extend\Locales(__DIR__ . '/resources/locale'),
 ];
