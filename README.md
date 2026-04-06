@@ -38,8 +38,26 @@ php flarum cache:clear
 
 ## Compatibility
 
-- Flarum `^1.8`
+- Flarum `^1.8` and `^2.0`
 - Requires `flarum/tags`
+
+## Changelog
+
+### v2.0.19 — 2026-04-07
+
+**Critical bugfix:** Enabling the extension caused the entire Flarum SPA to crash with `TypeError: undefined is not an object (evaluating 'r.extend')`.
+
+**Root cause:** The webpack config was missing `output.libraryTarget: 'commonjs2'`. Without it, the compiled bundle had no `module.exports` assignment, so `flarum.extensions['quasimo-tag-sidebar']` was `undefined` at runtime. Flarum's `bootExtensions()` iterates over all registered extensions and crashes immediately when it encounters an `undefined` entry.
+
+**Fix:** Added `output: { libraryTarget: 'commonjs2' }` to `webpack.config.js`, ensuring `module.exports = {}` is always present in the output bundle.
+
+**Upgrade:** Run `composer update quasimo/flarum-ext-tag-sidebar && php flarum cache:clear`.
+
+---
+
+### v2.0.18 — 2026-04-07
+
+Resolve `extend` and `IndexPage` at runtime inside the initializer callback instead of at module top-level, preventing potential timing issues on Flarum 1.x.
 
 ## Links
 
