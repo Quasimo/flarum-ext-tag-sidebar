@@ -1,6 +1,7 @@
 import app from 'flarum/admin/app';
 
-// Flarum 1.x: flarum.reg.get is not a function, use app.extensionData
+// Flarum 1.x only: use app.extensionData
+// Flarum 2.x uses the extenders exported from admin.js
 if (typeof flarum === 'undefined' || typeof flarum.reg === 'undefined' || typeof flarum.reg.get !== 'function') {
   app.initializers.add('quasimo-tag-sidebar', () => {
     app.extensionData
