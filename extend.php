@@ -25,6 +25,39 @@ $extenders = [
     new Extend\Locales(__DIR__ . '/resources/locale'),
 ];
 
+// Flarum 2.x: register admin settings and permissions via PHP extender
+if (class_exists(\Flarum\Extend\Admin::class)) {
+    $extenders[] = (new Extend\Admin())
+        ->setting([
+            'setting' => 'quasimo-tag-sidebar.sidebar_position',
+            'type'    => 'select',
+            'label'   => 'quasimo-tag-sidebar.admin.setting_position',
+            'help'    => 'quasimo-tag-sidebar.admin.setting_position_help',
+            'options' => [
+                'left'  => 'quasimo-tag-sidebar.admin.position_left',
+                'right' => 'quasimo-tag-sidebar.admin.position_right',
+            ],
+            'default' => 'left',
+        ])
+        ->setting([
+            'setting' => 'quasimo-tag-sidebar.content_type',
+            'type'    => 'select',
+            'label'   => 'quasimo-tag-sidebar.admin.setting_content_type',
+            'help'    => 'quasimo-tag-sidebar.admin.setting_content_type_help',
+            'options' => [
+                'markdown' => 'quasimo-tag-sidebar.admin.content_type_markdown',
+                'html'     => 'quasimo-tag-sidebar.admin.content_type_html',
+            ],
+            'default' => 'markdown',
+        ])
+        ->permission([
+            'permission'   => 'quasimo-tag-sidebar.editSidebar',
+            'label'        => 'quasimo-tag-sidebar.admin.permission_edit_sidebar',
+            'icon'         => 'fas fa-pen',
+            'defaultGroup' => 'mod',
+        ]);
+}
+
 // Flarum 2.x: ApiResource + Schema
 if (class_exists(\Flarum\Extend\ApiResource::class)) {
     $extenders[] = (new Extend\ApiResource(\Flarum\Tags\Api\Resource\TagResource::class))
